@@ -1,18 +1,23 @@
 import requests
 from lxml import html
 
-links = set()
+url = "https://www.nomorelyrics.net/a.html"
 
-def explore(link):
-    if link in links:
+urls = set()
+
+def explore(url):
+    if url in urls:
         return
-    print("EXPLORE " + link)
-    links.add(link)
-    page = requests.get(link)
+    print("explore", url)
+    urls.add(url)
+    page = requests.get(url)
     webpage = html.fromstring(page.content)
-    for k in webpage.xpath('//a/@href')[:3]:
-        print(link+k)
-        explore(link+k)
+    for k in webpage.xpath('//a/@href')[:90]:
+        text = url
+        if not url[-1] == '/':
+            text = ""
+            for u in url.split('/')[:-1]:
+                text += u+"/"
+        explore(text+str(k).replace("/", ""))
 
-
-explore("https://www.nomorelyrics.net")
+explore(url)
