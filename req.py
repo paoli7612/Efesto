@@ -1,23 +1,41 @@
 import requests
-from lxml import html
+from bs4 import BeautifulSoup
 
-url = "https://www.nomorelyrics.net/a.html"
+def canzone(url, nomeCanzone, nomeArtista):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
 
-urls = set()
+    div = soup.find('div', {'class': 'chiave'})
+    with  open('canzoni/' + nomeArtista.strip() + "." + nomeCanzone.strip(), 'w') as f:
+        for r in div.text.split('\n'):
+            r = r.strip()
+            if not r:
+                continue
+            chords = False
+            for c in ['DO', 'RE', 'MI', 'FA', 'SOL', 'LA', 'SI']:
+                if c in r:
+                    chords = True
+            if (chords):
+                continue
+            f.write(r + '\n')
 
-def explore(url):
-    if url in urls:
-        return
-    print("explore", url)
-    urls.add(url)
-    page = requests.get(url)
-    webpage = html.fromstring(page.content)
-    for k in webpage.xpath('//a/@href')[:90]:
-        text = url
-        if not url[-1] == '/':
-            text = ""
-            for u in url.split('/')[:-1]:
-                text += u+"/"
-        explore(text+str(k).replace("/", ""))
+def artista(url, nomeArtista):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
 
-explore(url)
+    divs = soup.find_all('div', {'class': 'archives'})
+    for div in divs[:2]:
+        nomeCanzone = div.text
+        canzone(div.find('a')['href'], nomeCanzone, nomeArtista)
+
+def sito(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    div = soup.find('ul', {'id': 'italiani'})
+    links = div.find_all('a')
+
+    for link in links[:2]:
+        artista(link['href'], link.text)
+
+sito('https://www.accordiespartiti.it/accordi-chitarra/')
