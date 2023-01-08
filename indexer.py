@@ -3,9 +3,15 @@
 from whoosh import index
 from whoosh.fields import *
 from whoosh.qparser import QueryParser
-import os, glob
+import os
+import glob
 # definiamo il schema per il nostro indice
-schema = Schema(titolo=TEXT(stored=True), artista=TEXT, testo=TEXT)
+schema = Schema(titolo=TEXT(stored=True),
+                artista=TEXT(stored=True),
+                testo=TEXT(stored=False),
+                path=TEXT(stored=True),
+                sentiment=NUMERIC(stored=True),
+                )
 
 if not os.path.exists("indexdir"):
     os.mkdir("indexdir")
@@ -18,6 +24,7 @@ for filepath in glob.glob(folder + '/*.txt'):
         file = filepath.split("\\")[1]
         artista, titolo = file.split(".")[:2]
         testo = open(filepath, 'r').read()
-        writer.add_document(titolo=titolo, artista=artista, testo=testo)
-    except: pass
+        writer.add_document(titolo=titolo, artista=artista, testo=testo, path=filepath)
+    except:
+        pass
 writer.commit()

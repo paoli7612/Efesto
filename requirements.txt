@@ -1,2 +1,3 @@
 request
-Whoosh 
+Whoosh
+prettytable
