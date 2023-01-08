@@ -1,30 +1,18 @@
-import os
+
 from whoosh import index
-from whoosh.fields import Schema, TEXT
+from whoosh.fields import *
 
-# Define the schema for the index
-schema = Schema(title=TEXT, content=TEXT)
+from whoosh.qparser import QueryParser
 
-# Create the index in the current directory
-if not os.path.exists("indexdir"):
-    os.mkdir("indexdir")
-ix = index.create_in("indexdir", schema)
+ix = index.open_dir("indexdir")
 
-# Open a writer to add documents to the index
-writer = ix.writer()
+artista = input("artista? ('' default): ")
+titolo = input("titolo? ('' default): ")
+testo = input("testo? ('' default): ")
 
-for f in os.listdir('./canzoni'):
-    print(f)
-    file = open('./canzoni/' + f, 'r')
-    try:
-        writer.add_document(title=f, content=file.read())
-    except: pass
-
-# Commit the changes
-writer.commit()
-
-# Perform a search
+query = input("cosa: ")
 with ix.searcher() as searcher:
-    results = searcher.find("content", "denuncia")
-    for result in results:
-        print(result)
+    query = QueryParser("testo", ix.schema).parse(query)
+    results = searcher.search(query)
+    for hit in results:
+        print(hit.fields())
