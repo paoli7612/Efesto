@@ -29,6 +29,7 @@ def artista(url, nomeArtista):
         canzone(div.find('a')['href'], nomeCanzone, nomeArtista)
 
 
+
 response = requests.get('https://www.accordiespartiti.it/accordi-chitarra/')
 soup = BeautifulSoup(response.text, 'html.parser', from_encoding="utf-8")
 
@@ -37,3 +38,4 @@ links = div.find_all('a')
 
 for link in links:
     artista(link['href'], link.text)
+print(asdsadasd)
