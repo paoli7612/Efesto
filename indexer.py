@@ -1,30 +1,20 @@
+import requests, os
+from preprocessing import preprocessing, removeFew, maxWord
+class Indexer:
+    def __init__(self, IN_FILE, OUT_FILE):
+        with open(IN_FILE, 'r', encoding='utf-8') as file:
+            outFile = open(OUT_FILE, 'w', encoding='utf-8')
+            for row in file:
+                row = row.strip()
+                try:
+                    p, text, chords = row.split(' { } ')
+                    if not bool(text.strip()):
+                        continue
+                    ll = preprocessing(text)
+                    _, m = maxWord(ll)
+                    ll = removeFew(ll, m/3)
+                    outFile.write(p + ' { } ' + str(ll) + " { } " + str(chords) + "\n")
+                except: pass
 
-# importiamo le classi di Whoosh di cui avremo bisogno
-from whoosh import index
-from whoosh.fields import *
-from whoosh.qparser import QueryParser
-import os
-import glob
-# definiamo il schema per il nostro indice
-schema = Schema(titolo=TEXT(stored=True),
-                artista=TEXT(stored=True),
-                testo=TEXT(stored=False),
-                path=TEXT(stored=True),
-                sentiment=NUMERIC(stored=True),
-                )
-
-if not os.path.exists("indexdir"):
-    os.mkdir("indexdir")
-ix = index.create_in("indexdir", schema)
-writer = ix.writer()
-
-folder = 'canzoni'
-for filepath in glob.glob(folder + '/*.txt'):
-    try:
-        file = filepath.split("\\")[1]
-        artista, titolo = file.split(".")[:2]
-        testo = open(filepath, 'r').read()
-        writer.add_document(titolo=titolo, artista=artista, testo=testo, path=filepath)
-    except:
-        pass
-writer.commit()
+if __name__ == '__main__':
+    i = Indexer("testi.txt", "indice.txt")
