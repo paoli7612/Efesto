@@ -3,9 +3,13 @@ from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 
 class _App:
-    def __init__(self, text):
+    def __init__(self, text, isChords=False):
+        if isChords:
+            text = text.lower()
+            self.index = text.split()
+            return
         # print(text)            # Hei ciao sto usando whatsapp ciao
-        tokens = self.A_analysis(text)      
+        tokens = self.A_analysis(text)
         # print(tokens)          # ['Hei', 'ciao', 'sto', 'usando', 'whatsapp', 'ciao']
         tokens = self.B_stopwords(tokens)  
         # print(tokens)          # ['Hei', 'ciao', 'usando', 'whatsapp', 'ciao']
@@ -49,8 +53,8 @@ class _App:
         index.reverse()
         return index
 
-def preprocessing(text):
-    a = _App(text)
+def preprocessing(text, isChord=False):
+    a = _App(text, isChord)
     l = a.index
     return l
 

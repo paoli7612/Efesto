@@ -17,18 +17,20 @@ class Whoosh:
             if tokens:
                 tokens = preprocessing(tokens)
                 for t in tokens:
-                    qq.append(query.Term('tokens', t))
+                    qq.append(query.Term('tokens', t[0]))
             if chords:
-                chords = preprocessing(chords)
+                chords = preprocessing(chords, True)
                 for c in chords:
                     qq.append(query.Term('chords', c))
             q = query.And(qq)
-            print(q)
+
+            print("Query whoosh:", q)
+
             results = searcher.search(q)
             table = list()
             for hit in results:
                 fields = hit.fields()
-                table.append([fields['title'], fields['artist']])
+                table.append([fields['title'], fields['artist'], fields['score']])
             return table
 
     @staticmethod
@@ -52,7 +54,7 @@ class Whoosh:
             for t, c in tt:
                 tokens += t + " "
             score = snenerizer.analizza(row)
-            writer.add_document(title=titolo, artist=artist, tokens=tokens, chords=chords, score=score)
+            writer.add_document(title=titolo, artist=artist, tokens=tokens, chords=chords.lower(), score=score)
         writer.commit()
     
 if __name__ == '__main__':
