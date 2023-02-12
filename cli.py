@@ -14,6 +14,12 @@ class Cli(Cmd):
         artist = input("Artista: ")
         searchWhoosh(artist, tokens, chords)
     
+    def help_whoosh(self):
+        print("Prepara una ricerca sull'indice di whoosh")
+
+    def help_inverted(self):
+        print("Effettua una ricerca su una parola tramite l'inverted index")
+
     def do_inverted(self, args):
         searchInverted(args)
 

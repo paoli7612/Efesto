@@ -10,7 +10,7 @@ WHOOSH_DIR = 'whoosh'
 paths = TESTI_FILE, INDICE_FILE, INVERTEDINDEX_FILE, WHOOSH_DIR
 
 if __name__ == '__main__':
-    # cancella tutti i documenti e il corpus di documenti
+    # cancella tutti i documenti e il corpus di documenti ( se presenti )
     Boss.reset(*paths, CANZONI_DIR)
 
     b = Boss()

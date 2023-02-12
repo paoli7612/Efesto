@@ -1,7 +1,6 @@
 from prettytable import PrettyTable
 
 def display(results, withN=False):
-    print("DISPLAY", results)
     table = PrettyTable()
     if withN:
         table.field_names = ["Titolo", "Artista", "n"]

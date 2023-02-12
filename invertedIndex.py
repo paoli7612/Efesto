@@ -1,6 +1,6 @@
 import pickle
-from preprocessing import preprocessing, removeFew, maxWord
-from myDisplay import display
+from preprocessing import preprocessing
+
 class InvertedIndex:
     def __init__(self, OUT_FILE, IN_FILE=None):
         self.tokens = dict()
@@ -23,7 +23,7 @@ class InvertedIndex:
 
     def build(self, IN_FILE, OUT_FILE):
         for row in open(IN_FILE, 'r', encoding='utf-8'):
-            p, text = row.split(' { } ')
+            p, text, chords = row.split(' { } ')
             d = eval(text)
             for t, c in d:
                 self.add(t, c, p)
@@ -36,4 +36,6 @@ class InvertedIndex:
         else:
             self.tokens[t] = [(p, c)]
         
+if __name__ == '__main__':
+    InvertedIndex('indice.txt', 'ii.pickle')
     
